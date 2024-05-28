@@ -13,13 +13,20 @@ namespace ConsoleArenaGame
             Console.WriteLine($"Attacker: {args.Attacker}");
             Console.WriteLine($"Defender: {args.Defender}");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------");
+
+
+            //Chatgpt help was used for JujutsuSorcerers.cs and DomainExpansion.cs
         }
         static void Main(string[] args)
         {
             GameEngine gameEngine = new GameEngine()
             {
-                HeroA = new JujutsuSorcerers("Sukuna", 10, 20, new DomainExpansion("DomainExpansion")),
-                HeroB = new JujutsuSorcerers("Gojo", 10, 20, new DomainExpansion("DomainExpansion")),
+            
+                HeroA = new TheChosenOnes("IZBRANIQ", 10, 20, new Mjolnir("Mjolnir")),
+                HeroB = new Sorcerer("MagiosnikaGosho", 10, 20, new CursedEnergy("CursedEnergy")),
+                //USE DOWN 2 HEROES FOR ULTIMATE COOL EPIC FIGHT!!!!!! DONT MISS OUT 
+                //  HeroA = new JujutsuSorcerers("Sukuna", 10, 20, new DomainExpansion("DomainExpansion")),
+                // HeroB = new JujutsuSorcerers("Gojo", 10, 20, new DomainExpansion("DomainExpansion")),
 
                 // HeroA = new Knight("Knight", 10, 20, new Sword("Sword")),
                 // HeroB = new Assassin("Assassin", 10, 5, new Dagger("Dagger")),
