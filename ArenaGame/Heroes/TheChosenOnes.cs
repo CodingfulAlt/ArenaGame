@@ -1,8 +1,6 @@
-﻿using System;
-using ArenaGame;
-using ArenaGame.Weapons;
+﻿using ArenaGame.Weapons;
 
-namespace ArenaGame
+namespace ArenaGame.Heroes
 {
     public class TheChosenOnes : Hero
     {
@@ -13,17 +11,9 @@ namespace ArenaGame
 
         public override double Attack()
         {
-            double Damage = base.Attack();
-            if (Weapon != null && Weapon is Mjolnir && Health < 25)
-            {
-                Damage += ((Mjolnir)Weapon).TriggerAbility(Health);
-            }
-            else { 
-            }
-            return Damage;
+            double baseDamage = base.Attack();
+            double additionalDamage = Weapon.TriggerSpecialAbility(this); 
+            return baseDamage + additionalDamage;
         }
-
-
-      
     }
 }

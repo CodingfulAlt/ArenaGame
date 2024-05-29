@@ -1,5 +1,6 @@
-﻿using System;
-using ArenaGame;
+﻿    using System;
+    using ArenaGame;
+using ArenaGame.Heroes;
 
 namespace ArenaGame.Weapons
 {
@@ -7,17 +8,16 @@ namespace ArenaGame.Weapons
     public class DomainExpansion : IWeapon
     {
         public string Name { get; set; }
-        public double AttackDamage { get; private set; }
-        public double BlockingPower { get; private set; }
-        private Random random = new Random();
+        public double AttackDamage { get; private set; } 
+        public double BlockingPower { get; private set; } 
 
-        // Flags to track if abilities have been used
-        private bool infinityActivated = false;
-        private bool limitlessActivated = false;
-        private bool purpleActivated = false;
-        private bool malevolentKitchenActivated = false;
-        private bool malevolentShrineActivated = false;
-        private bool rtcActivated = false;
+        public Random random = new Random();
+        public bool infinityActivated = false;
+        public bool limitlessActivated = false;
+        public bool purpleActivated = false;
+        public bool malevolentKitchenActivated = false;
+        public bool malevolentShrineActivated = false;
+        public bool rtcActivated = false;
 
         public DomainExpansion(string name)
         {
@@ -26,7 +26,44 @@ namespace ArenaGame.Weapons
             BlockingPower = 10;
         }
 
-        public double TriggerInfinity(double health, ref int immobilizedTurns)
+        public double TriggerSpecialAbility(Hero hero)
+        {
+            if (hero is JujutsuSorcerers jujutsuSorcerer)
+            {
+                double additionalDamage = 0;
+
+                // Handle Gojo-specific abilities
+                if (string.Equals(jujutsuSorcerer.Name, "Gojo", StringComparison.OrdinalIgnoreCase))
+                {
+                    additionalDamage += TriggerInfinity(jujutsuSorcerer.Health, ref jujutsuSorcerer.immobilizedEnemyTurns);
+                    if (Purple())
+                    {
+                        return additionalDamage * 0.64;
+                    }
+                }
+                // Handle Sukuna-specific abilities
+                else if (string.Equals(jujutsuSorcerer.Name, "Sukuna", StringComparison.OrdinalIgnoreCase))
+                {
+                    bool instantKill = false;
+                    additionalDamage += HandleSukunaAbilities(jujutsuSorcerer.Health, jujutsuSorcerer.maxHealth, ref instantKill);
+                    if (instantKill)
+                    {
+                        Console.WriteLine("Sukuna instantly kills the enemy.");
+                        return double.MaxValue;  // Represents instant kill
+                    }
+                }
+                // Apply non-specific hero boost
+                else
+                {
+                    additionalDamage += ApplyNonGojoBoost(jujutsuSorcerer.Health, jujutsuSorcerer.maxHealth, ref jujutsuSorcerer.boostTurnsRemaining);
+                }
+
+                return additionalDamage;
+            }
+            return 0;
+        }
+
+        private double TriggerInfinity(double health, ref int immobilizedTurns)
         {
             if (health <= 50 && !infinityActivated)
             {
@@ -38,20 +75,7 @@ namespace ArenaGame.Weapons
             return 1.0;
         }
 
-        // Handles "Limitless" ability for Gojo: Activates if health <= 10% of max health or if health drops to 0 or below
-        public double TriggerLimitless(double health, double maxHealth)
-        {
-            if ((health <= maxHealth * 0.1 || health <= 0) && !limitlessActivated)
-            {
-                limitlessActivated = true;
-                double recoveryOption = random.NextDouble() < 0.5 ? 0.30 : 0.20;
-                Console.WriteLine($"Gojo activates Limitless: Recovers {(recoveryOption * 100)}% of max health.");
-                return recoveryOption;
-            }
-            return 0;
-        }
-
-        public bool Purple()
+        private bool Purple()
         {
             if (!purpleActivated)
             {
@@ -66,16 +90,15 @@ namespace ArenaGame.Weapons
             return false;
         }
 
-        // Applies a 3% attack boost for non-Gojo characters
-        public double ApplyNonGojoBoost(double currentHealth, double maxHealth, ref int boostTurnsRemaining)
+        private double ApplyNonGojoBoost(double currentHealth, double maxHealth, ref int boostTurnsRemaining)
         {
             if (currentHealth <= maxHealth * 0.6 && boostTurnsRemaining == 0)
             {
                 boostTurnsRemaining = 4;
                 Console.WriteLine("Non-Gojo hero activates boost: Gains 3% attack increase for 4 turns.");
+                return 1.03;
             }
-
-            if (boostTurnsRemaining > 0)
+            else if (boostTurnsRemaining > 0)
             {
                 boostTurnsRemaining--;
                 return 1.03;
@@ -84,8 +107,24 @@ namespace ArenaGame.Weapons
             return 1.0;
         }
 
-    
-        public bool MalevolentKitchen(double health, double maxHealth)
+        private double HandleSukunaAbilities(double health, double maxHealth, ref bool instantKill)
+        {
+            double totalDamage = 0;
+            if (MalevolentKitchen(health, maxHealth))
+            {
+                totalDamage += 50; // Deals 10 damage 5 times
+            }
+            totalDamage *= MalevolentShrine(health, maxHealth);
+
+            if (TenFingerMod())
+            {
+                instantKill = true;
+            }
+
+            return totalDamage;
+        }
+
+        private bool MalevolentKitchen(double health, double maxHealth)
         {
             if (health <= maxHealth * 0.5 && !malevolentKitchenActivated)
             {
@@ -96,7 +135,7 @@ namespace ArenaGame.Weapons
             return false;
         }
 
-        public double MalevolentShrine(double health, double maxHealth)
+        private double MalevolentShrine(double health, double maxHealth)
         {
             if (health <= maxHealth * 0.25 && !malevolentShrineActivated)
             {
@@ -108,28 +147,7 @@ namespace ArenaGame.Weapons
             return 1.0;
         }
 
-        public double RTC(double health, double maxHealth)
-        {
-            if (health <= maxHealth * 0.1 && !rtcActivated)
-            {
-                rtcActivated = true;
-                double recoveryChance = random.NextDouble();
-                if (recoveryChance < 0.25)
-                {
-                    Console.WriteLine("Sukuna activates RTC: Heals for 41% of max health and resets all skills.");
-                    ResetSukunaSkills();
-                    return 0.41;
-                }
-                else
-                {
-                    Console.WriteLine("Sukuna activates RTC: Heals for 10% of max health.");
-                    return 0.10;
-                }
-            }
-            return 0;
-        }
-
-        public bool TenFingerMod()
+        private bool TenFingerMod()
         {
             if (random.NextDouble() < 0.03)  // 3% chance
             {
@@ -145,24 +163,6 @@ namespace ArenaGame.Weapons
             malevolentShrineActivated = false;
             rtcActivated = false;
             Console.WriteLine("Sukuna's skills have been reset.");
-        }
-
-        // Method to handle the activation of all Sukuna abilities
-        public double HandleSukunaAbilities(double health, double maxHealth, ref bool instantKill)
-        {
-            double totalDamage = 0;
-            if (MalevolentKitchen(health, maxHealth))
-            {
-                totalDamage += 50; // Deals 10 damage 5 times
-            }
-            totalDamage *= MalevolentShrine(health, maxHealth);
-
-            if (TenFingerMod())
-            {
-                instantKill = true;
-            }
-
-            return totalDamage;
         }
     }
 }

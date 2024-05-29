@@ -1,35 +1,19 @@
-﻿using System;
-using ArenaGame.Weapons;
+﻿using ArenaGame.Weapons;
 
 namespace ArenaGame.Heroes
 {
     public class Sorcerer : Hero
     {
-        public bool CurseActive { get; set; }
-        public int CurseDuration { get; set; }
-
         public Sorcerer(string name, double armor, double strength, IWeapon weapon)
             : base(name, armor, strength, weapon)
         {
-            CurseActive = false;
-            CurseDuration = 0;
         }
 
         public override double Attack()
         {
-            if (Weapon is CursedEnergy cursedEnergy)
-            {
-                cursedEnergy.TriggerAbility(this);  
-            }
-            return base.Attack() + Weapon.AttackDamage;
+            double baseDamage = base.Attack();
+            double additionalDamage = Weapon.TriggerSpecialAbility(this);  
+            return baseDamage + additionalDamage;
         }
-
-        public override double Defend(double incomingDamage)
-        {
-            double damageAfterArmor = incomingDamage - Armor;
-            AdjustHealth(-damageAfterArmor);
-            return damageAfterArmor;
-        }
-
     }
 }

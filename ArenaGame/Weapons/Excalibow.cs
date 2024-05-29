@@ -1,5 +1,4 @@
 ﻿using System;
-using ArenaGame;
 
 namespace ArenaGame.Weapons
 {
@@ -8,30 +7,25 @@ namespace ArenaGame.Weapons
         public string Name { get; set; }
         public double AttackDamage { get; private set; }
         public double BlockingPower { get; private set; }
-
-        private int turnCounter;
+        private int turnCounter = 0;
 
         public Excalibow(string name)
         {
             Name = name;
-            AttackDamage = 25;
-            BlockingPower = 5;
-            turnCounter = 0;
+            AttackDamage = 15;
+            BlockingPower = 30;
         }
 
-        public string SpecialAbility()
-        {
-            return "Triple arrow - shoots 3 arrows instead of 1 every 3 turns.";
-        }
-        public double TripleArrow(double baseDamage)
+        public double TriggerSpecialAbility(Hero hero)
         {
             turnCounter++;
+            
             if (turnCounter % 3 == 0)
             {
-                Console.WriteLine("Ability activated: Shoots 2 arrows!");
-                return baseDamage * 2; 
+                Console.WriteLine($"Excalibow special ability activated: Triple Arrow!");
+                return AttackDamage * 2;  
             }
-            return baseDamage;  
+            return 0;
         }
     }
 }

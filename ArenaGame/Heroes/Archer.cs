@@ -1,8 +1,6 @@
-﻿using System;
-using ArenaGame;
-using ArenaGame.Weapons;
+﻿using ArenaGame.Weapons;
 
-namespace ArenaGame
+namespace ArenaGame.Heroes
 {
     public class Archer : Hero
     {
@@ -13,19 +11,9 @@ namespace ArenaGame
 
         public override double Attack()
         {
-            double damage = base.Attack();
-            if (Weapon is Excalibow excalibow)
-            {
-                damage = excalibow.TripleArrow(damage);
-            }
-
-            Console.WriteLine($"{Name} attacks with {damage} damage.");
-            return damage;
-        }
-
-        public override double Defend(double incomingDamage)
-        {
-            return base.Defend(incomingDamage);
+            double baseDamage = base.Attack();
+            double additionalDamage = Weapon.TriggerSpecialAbility(this); 
+            return baseDamage + additionalDamage;
         }
     }
 }

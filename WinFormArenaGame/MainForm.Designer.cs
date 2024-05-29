@@ -1,9 +1,11 @@
-﻿namespace WinFormArenaGame
+﻿using System.Windows.Forms;
+
+namespace WinFormArenaGame
 {
     partial class MainForm
     {
         private System.ComponentModel.IContainer components = null;
-
+        //chatgpt copilot and stackoverflow helped for creating mainform.cs and some parts in mainform.design
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -25,12 +27,13 @@
             lbWinner = new Label();
             label1 = new Label();
             label2 = new Label();
+            lbHeroList = new ListBox();
             ((System.ComponentModel.ISupportInitialize)imgFight).BeginInit();
             SuspendLayout();
             // 
             // btnNewGame
             // 
-            btnNewGame.Location = new Point(675, 63);
+            btnNewGame.Location = new Point(678, 421);
             btnNewGame.Name = "btnNewGame";
             btnNewGame.Size = new Size(94, 29);
             btnNewGame.TabIndex = 0;
@@ -40,28 +43,28 @@
             // 
             // tbKnight
             // 
-            tbKnight.Location = new Point(23, 35);
+            tbKnight.Location = new Point(23, 151);
             tbKnight.Multiline = true;
             tbKnight.Name = "tbKnight";
             tbKnight.ScrollBars = ScrollBars.Vertical;
-            tbKnight.Size = new Size(560, 437);
+            tbKnight.Size = new Size(560, 321);
             tbKnight.TabIndex = 1;
             tbKnight.TextChanged += tbKnight_TextChanged_1;
             // 
             // tbAssassin
             // 
-            tbAssassin.Location = new Point(879, 44);
+            tbAssassin.Location = new Point(879, 159);
             tbAssassin.Multiline = true;
             tbAssassin.Name = "tbAssassin";
             tbAssassin.ScrollBars = ScrollBars.Vertical;
-            tbAssassin.Size = new Size(560, 437);
+            tbAssassin.Size = new Size(560, 322);
             tbAssassin.TabIndex = 2;
             // 
             // imgFight
             // 
             imgFight.Enabled = false;
             imgFight.Image = (Image)resources.GetObject("imgFight.Image");
-            imgFight.Location = new Point(631, 252);
+            imgFight.Location = new Point(628, 159);
             imgFight.Name = "imgFight";
             imgFight.Size = new Size(206, 134);
             imgFight.TabIndex = 3;
@@ -69,16 +72,17 @@
             // 
             // lbWinner
             // 
-            lbWinner.Location = new Point(631, 121);
+            lbWinner.Location = new Point(628, 313);
             lbWinner.Name = "lbWinner";
             lbWinner.Size = new Size(206, 89);
             lbWinner.TabIndex = 4;
             lbWinner.Visible = false;
+            lbWinner.Click += lbWinner_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(879, 18);
+            label1.Location = new Point(1125, 130);
             label1.Name = "label1";
             label1.Size = new Size(66, 20);
             label1.TabIndex = 5;
@@ -87,17 +91,28 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(23, 9);
+            label2.Location = new Point(272, 128);
             label2.Name = "label2";
             label2.Size = new Size(55, 20);
             label2.TabIndex = 6;
             label2.Text = "Knight:";
+            label2.Click += label2_Click;
+            // 
+            // lbHeroList
+            // 
+            lbHeroList.FormattingEnabled = true;
+            lbHeroList.ItemHeight = 20;
+            lbHeroList.Location = new Point(12, 3);
+            lbHeroList.Name = "lbHeroList";
+            lbHeroList.Size = new Size(1416, 124);
+            lbHeroList.TabIndex = 7;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1464, 504);
+            Controls.Add(lbHeroList);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(lbWinner);
@@ -121,5 +136,6 @@
         private Label lbWinner;
         private Label label1;
         private Label label2;
+        private ListBox lbHeroList;
     }
 }

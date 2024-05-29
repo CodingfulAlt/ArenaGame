@@ -1,12 +1,9 @@
-﻿using System;
-using ArenaGame.Weapons;
+﻿using ArenaGame.Weapons;
 
 namespace ArenaGame.Heroes
 {
     public class Goblin : Hero
     {
-        private int turnCounter = 0;
-
         public Goblin(string name, double armor, double strength, IWeapon weapon)
             : base(name, armor, strength, weapon)
         {
@@ -14,13 +11,9 @@ namespace ArenaGame.Heroes
 
         public override double Attack()
         {
-            double damage = base.Attack();
-            if (Weapon is Bag bag)
-            {
-                damage += bag.SpecialAbility();
-            }
-            turnCounter++;
-            return damage;
+            double baseDamage = base.Attack();
+            double specialDamage = Weapon.TriggerSpecialAbility(this); 
+            return baseDamage + specialDamage;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Linq;
 
 namespace ArenaGame.Weapons
 {
@@ -12,20 +11,17 @@ namespace ArenaGame.Weapons
         public Mjolnir(string name)
         {
             Name = name;
-            AttackDamage = 25;
-            BlockingPower = 5; 
+            AttackDamage = 20;
+            BlockingPower = 30;
         }
 
-        public string SpecialAbility()
+        public double TriggerSpecialAbility(Hero hero)
         {
-            return "Lightning Strike - deals 50 extra damage when the wielder's health is below 25%.";
-        }
-        public double TriggerAbility(double userHealth)
-        {
-            if (userHealth < 25)
+          
+            if (hero.Health < 25)
             {
-                Console.WriteLine($"{Name} summons lighting from the sky..");
-                return 25;
+                Console.WriteLine($"{Name} summons lightning from the sky, causing massive damage!");
+                return 30; 
             }
             return 0;
         }

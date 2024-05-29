@@ -11,9 +11,8 @@ namespace ArenaGame
         string Name { get; set; }
         double AttackDamage { get; } 
         double BlockingPower { get; }
-        string SA()
-        {
-            return "No ability";
-        }
+        double TriggerSpecialAbility(Hero hero);
+
+
     }
 }
